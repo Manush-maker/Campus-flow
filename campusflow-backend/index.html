@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusSync AI - Smart Campus Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal active">
+        <div class="modal-content">
+            <div class="login-header">
+                <h2><i class="fas fa-university"></i> CampusSync AI</h2>
+                <p>Smart Campus Management System</p>
+            </div>
+            <div class="login-form">
+                <input type="text" id="username" placeholder="Username" value="student1">
+                <input type="password" id="password" placeholder="Password" value="123">
+                <select id="role" aria-label="Select User Role">
+                    <option value="student">Student</option>
+                    <option value="faculty">Faculty</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <button onclick="login()">Login <i class="fas fa-sign-in-alt"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="app hidden">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-graduation-cap"></i> CampusSync</h3>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" onclick="showDashboard()" class="nav-item active">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="#" onclick="showAttendance()" class="nav-item">
+                    <i class="fas fa-calendar-check"></i> Attendance
+                </a>
+                <a href="#" onclick="showSchedule()" class="nav-item">
+                    <i class="fas fa-clock"></i> Schedule
+                </a>
+                <a href="#" onclick="showAIAssistant()" class="nav-item">
+                    <i class="fas fa-robot"></i> AI Assistant
+                </a>
+                <a href="#" onclick="showTimetable()" class="nav-item">
+                    <i class="fas fa-table"></i> Timetable Generator
+                </a>
+                <a href="#" onclick="showLeave()" class="nav-item">
+                    <i class="fas fa-calendar-times"></i> Leave
+                </a>
+                <a href="#" onclick="logout()" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1 id="pageTitle">Dashboard</h1>
+                </div>
+                <div class="header-right">
+                    <span id="userInfo">Welcome, Student</span>
+                    <button class="profile-btn" onclick="logout()" aria-label="User Profile / Logout">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <main id="mainContent">
+                <!-- Student Dashboard -->
+                <div id="studentDashboard" class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Attendance</h3>
+                            <span class="status good">95%</span>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="attendanceChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Today's Classes</h3>
+                        </div>
+                        <div class="card-body schedule-list">
+                            <div class="schedule-item">
+                                <span>Math 101</span>
+                                <span>10:00 AM - Faculty: Dr. Smith</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span>Physics</span>
+                                <span>12:00 PM - Faculty: Dr. Johnson</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card full-width">
+                        <div class="card-header">
+                            <h3>Quick Actions</h3>
+                        </div>
+                        <div class="card-body">
+                            <button class="action-btn" onclick="showAIAssistant()">
+                                <i class="fas fa-robot"></i> Talk to AI Tutor
+                            </button>
+                            <button class="action-btn" onclick="showAttendance()">
+                                <i class="fas fa-calendar-check"></i> View Full Attendance
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faculty Dashboard -->
+                <div id="facultyDashboard" class="dashboard-grid hidden">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Mark Attendance</h3>
+                        </div>
+                        <div class="card-body">
+                            <select id="classSelect" aria-label="Select Class for Attendance">
+                                <option>Math 101 - 10:00 AM</option>
+                                <option>Physics - 12:00 PM</option>
+                            </select>
+                            <button class="btn-primary" onclick="markAttendance()">
+                                <i class="fas fa-check"></i> Mark Present
+                            </button>
+                            <button class="btn-danger" onclick="markAbsent()">
+                                <i class="fas fa-times"></i> Mark Absent
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Today's Schedule</h3>
+                        </div>
+                        <div class="card-body schedule-list">
+                            <div class="schedule-item faculty">
+                                <span>Math 101</span>
+                                <span>10:00 AM - 20 Students</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Leave Application</h3>
+                        </div>
+                        <div class="card-body">
+                            <input type="date" id="leaveDate" aria-label="Leave Date">
+                            <textarea placeholder="Reason for leave"></textarea>
+                            <button class="btn-primary" onclick="applyLeave()">Apply Leave</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Dashboard -->
+                <div id="adminDashboard" class="dashboard-grid hidden">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Overall Attendance</h3>
+                            <span class="status good">92%</span>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="adminAttendanceChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Faculty Productivity</h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="productivityChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>AI Usage Stats</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="stat-item">
+                                <span>Active Sessions</span>
+                                <span class="stat-number">127</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Questions Asked</span>
+                                <span class="stat-number">892</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Assistant -->
+                <div id="aiAssistant" class="ai-container hidden">
+                    <div class="ai-header">
+                        <h2><i class="fas fa-robot"></i> AI Study Assistant</h2>
+                        <p>Upload course materials or ask questions about your syllabus</p>
+                    </div>
+                    <div class="ai-main">
+                        <div class="chat-container" id="chatContainer">
+                            <div class="message bot">
+                                <div class="avatar"><i class="fas fa-robot"></i></div>
+                                Hello! I'm your AI tutor. Upload your course materials or ask me anything about your
+                                subjects. Try saying "Explain Newton's laws" or "Give me a quiz on calculus"!
+                            </div>
+                        </div>
+                        <div class="ai-input">
+                            <input type="file" id="courseUpload" accept=".pdf,.txt,.docx" class="hidden"
+                                aria-label="Upload Course Material">
+                            <button onclick="document.getElementById('courseUpload').click()" class="upload-btn">
+                                <i class="fas fa-upload"></i> Upload Course Material
+                            </button>
+                            <div class="input-group">
+                                <input type="text" id="aiInput"
+                                    placeholder="Ask me anything about your course... (Press Enter or click send)">
+                                <button onclick="sendMessage()" aria-label="Send Message">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                            <div class="voice-controls">
+                                <button id="voiceBtn" onclick="toggleVoice()" aria-label="Toggle Voice Input">
+                                    <i class="fas fa-microphone"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timetable Generator -->
+                <div id="timetableSection" class="section hidden">
+                    <div class="card full-width">
+                        <div class="card-header">
+                            <h3><i class="fas fa-table"></i> Auto Timetable Generator</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="facultyCount">Number of Faculty</label>
+                                    <input type="number" id="facultyCount" value="5" min="1" max="20">
+                                </div>
+                                <div class="form-group">
+                                    <label for="weeklyHours">Weekly Hours per Faculty</label>
+                                    <input type="number" id="weeklyHours" value="20" min="1" max="40">
+                                </div>
+                                <div class="form-group">
+                                    <label for="classDuration">Class Duration (minutes)</label>
+                                    <input type="number" id="classDuration" value="60" min="30" max="120">
+                                </div>
+                                <div class="form-group">
+                                    <label for="facultySubjects">Subjects per Faculty</label>
+                                    <textarea id="facultySubjects">Faculty 1: Math,Physics
+Faculty 2: Chemistry,Biology
+Faculty 3: English,History
+Faculty 4: Computer Science
+Faculty 5: Economics</textarea>
+                                </div>
+                            </div>
+                            <button class="btn-primary large" onclick="generateTimetable()">
+                                Generate Timetable <i class="fas fa-magic"></i>
+                            </button>
+                            <div id="timetableOutput" class="timetable-output"></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="ai-engine.js"></script>
+    <script src="timetable-generator.js"></script>
+</body>
+
+</html>
